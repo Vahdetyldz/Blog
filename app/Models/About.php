@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Blog extends Model
+class About extends Model
 {
-    protected $fillable = ['title','subTitle', 'content', 'user_id'];
+    protected $fillable = ['name','title', 'content', 'user_id'];
 
     public function user()
     {

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Clean Blog</title>
+        <title>Merhaba</title>
         <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -26,10 +26,10 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Anasayfa</a></li><!--Blog Sayfasına yönlendir-->
-                        <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>-->
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Blog Oluştur</a></li>
-                        <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>-->
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Anasayfa</a></li><!--Blog Sayfasına yönlendir-->
+                        <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Blog Oluştur</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Bloglarım</a></li>
                     </ul>
                 </div>
             </div>
@@ -53,25 +53,29 @@
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    @for($i = /*count($blogs)-1*/4; 0 < $i ; $i--)
+                    @for($i = count($blogs)-1; count($blogs)-5 < $i ; $i--)
                         <!-- Post preview-->
                         <div class="post-preview">
-                            <a href="post.html"><!--Buraya postun linkini dinamik olarak ekle-->
+                            <a href="#"><!--Buraya postun linkini dinamik olarak ekle-->
                                 <h2 class="post-title">{{ $blogs[$i]->title }}</h2>
                                 <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
                             </a>
                             <p class="post-meta">
-                                Posted by
-                                <a href="#!">Start Bootstrap</a>
-                                on September 24, 2023
+                                <a href="#!">{{$blogs[$i]->user->name}} {{$blogs[$i]->user->surname}}</a>
+                                Tarafından 
+                                <a href="#!">{{ \Carbon\Carbon::parse($blogs[$i]->user->created_at)->locale('tr')->translatedFormat('j F Y') }}</a> 
+                                Tarihinde Paylaşıldı
                             </p>
+                            <!--Bu kısmı vahdet116 hesabından https://chatgpt.com/c/67c17500-3ee8-8002-92ab-a8ff35609c14 adrsinden bak-->
                         </div>
                         <!-- Divider-->
                         <hr class="my-4" />
                     @endfor
                     
                     <!-- Pager-->
-                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+                    <div class="d-flex justify-content-end mb-4">
+                        <a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a>
+                    </div>
                 </div>
             </div>
         </div>

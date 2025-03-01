@@ -4,7 +4,7 @@ use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('BlogSayfası');
+    return view('welcome');
 });
 
 Route::get('/login', function () {
