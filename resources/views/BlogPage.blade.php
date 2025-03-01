@@ -53,28 +53,24 @@
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    @for($i = count($blogs)-1; count($blogs)-5 < $i ; $i--)
-                        <!-- Post preview-->
-                        <div class="post-preview">
-                            <a href="#"><!--Buraya postun linkini dinamik olarak ekle-->
-                                <h2 class="post-title">{{ $blogs[$i]->title }}</h2>
-                                <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
-                            </a>
-                            <p class="post-meta">
-                                <a href="#!">{{$blogs[$i]->user->name}} {{$blogs[$i]->user->surname}}</a>
-                                Tarafından 
-                                <a href="#!">{{ \Carbon\Carbon::parse($blogs[$i]->user->created_at)->locale('tr')->translatedFormat('j F Y') }}</a> 
-                                Tarihinde Paylaşıldı
-                            </p>
-                            <!--Bu kısmı vahdet116 hesabından https://chatgpt.com/c/67c17500-3ee8-8002-92ab-a8ff35609c14 adrsinden bak-->
-                        </div>
-                        <!-- Divider-->
-                        <hr class="my-4" />
-                    @endfor
+                    <div id="blog-container">
+                        @foreach(array_reverse($blogs->take(4)->toArray()) as $blog)
+                            <div class="post-preview">
+                                <a href="#"><h2 class="post-title">{{ $blog['title'] }}</h2></a>
+                                <p class="post-meta">
+                                    <a href="#!">{{ $blog->user->name }} {{ $blog->user->surname }}</a> 
+                                    Tarafından 
+                                    <a href="#!">{{ \Carbon\Carbon::parse($blog['created_at'])->locale('tr')->translatedFormat('j F Y') }}</a> 
+                                    Tarihinde Paylaşıldı
+                                </p>
+                            </div>
+                            <hr class="my-4" />
+                        @endforeach
+                    </div>
                     
                     <!-- Pager-->
                     <div class="d-flex justify-content-end mb-4">
-                        <a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a>
+                        <button id="loadMore" class="btn btn-primary text-uppercase">Older Posts →</button>
                     </div>
                 </div>
             </div>
