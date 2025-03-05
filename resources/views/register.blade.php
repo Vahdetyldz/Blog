@@ -84,6 +84,7 @@
         <form action="/register" method="POST">
             @csrf
             <input type="text" name="name" placeholder="Adınız" required>
+            <input type="text" name="surname" placeholder="Soyadınız" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Şifre" required>
             <input type="password" name="password_confirmation" placeholder="Şifre Tekrar" required>

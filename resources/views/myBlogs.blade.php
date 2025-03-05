@@ -49,7 +49,7 @@
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="site-heading">
                             <h1>Clean Blog</h1>
-                            <span class="subheading">Hazır Blog Sayfası</span>
+                            <span class="subheading">Benim Bloglarım</span>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div id="blog-container">
-                        @foreach ($blogs->take(4) as $blog)
+                        @foreach ($blogs as $blog)
                             <div class="post-preview">
                                 <a href="/blog-content/{{ $blog->id }}">
                                     <h2 class="post-title">{{ $blog->title }}</h2>
@@ -71,15 +71,19 @@
                                     <a href="/blog-content/{{ $blog->id }}">{{ $blog->user->name }} {{$blog->user->surname}}</a>
                                     tarafından {{ \Carbon\Carbon::parse($blog->created_at)->locale('tr')->translatedFormat('j F Y') }} tarihinde paylaşıldı.
                                 </p>
+                                <div class="post">
+                                    <a href="{{ route('post.edit', $blog->id) }}" class="btn btn-warning">Güncelle</a>
+                            
+                                    <form action="{{ route('post.destroy', $blog->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Sil</button>
+                                    </form>
+                                </div>
                             </div>
                             <hr class="my-4">
                         @endforeach
-                    </div>
-                    <div class="d-flex justify-content-end mb-4">
-                        <button class="btn btn-primary text-uppercase" id="loadMoreBtn">Daha Fazla Göster</button>
-                    </div>
-                    
-                    
+                    </div>                    
                 </div>
             </div>
         </div>

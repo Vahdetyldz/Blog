@@ -26,35 +26,69 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         scrollPos = currentTop;
     });
-})
+});
+/*blog tablosundaki user ıd yi kullanarak user name çek*/
 document.addEventListener("DOMContentLoaded", function () {
-    let offset = 4; // İlk 4 blog yüklendi, şimdi 4'ten başlayacağız.
-    document.getElementById("loadMore").addEventListener("click", function () {
-        fetch(`/load-more-blogs?offset=${offset}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.blogs.length > 0) {
-                    let container = document.getElementById("blog-container");
-                    data.blogs.forEach(blog => {
-                        let postHTML = `
-                            <div class="post-preview">
-                                <a href="#"><h2 class="post-title">${blog.title}</h2></a>
-                                <p class="post-meta">
-                                    <a href="#!">${blog.user.name} ${blog.user.surname}</a> 
-                                    Tarafından 
-                                    <a href="#!">${blog.date}</a> 
-                                    Tarihinde Paylaşıldı
-                                </p>
-                            </div>
-                            <hr class="my-4" />
-                        `;
-                        container.insertAdjacentHTML("beforeend", postHTML);
-                    });
+    let offset = 4; // Atlanacak veri sayısı
+    const limit = 4; // Veri Limiti
+    let loadMoreBtn = document.getElementById("loadMoreBtn");
 
-                    offset += 4; // Bir sonraki yüklemede 4 artır.
-                } else {
-                    document.getElementById("loadMore").style.display = "none"; // Veri bittiğinde butonu kaldır.
+    function fetchBlogs(offset) {
+        fetch(`/blogs/load-more-blogs?offset=${offset}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Veri çekme hatası!");
                 }
-            });
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // JSON formatında gelen veriyi kontrol et
+                let blogs = data; // `blogs` anahtarına eriş
+
+                if (!Array.isArray(blogs)) {
+                    alert("Hata: Beklenen veri bir dizi değil.");
+                    return;
+                }
+                handleBlogs(blogs);
+            })
+            .catch(error => console.error("Hata:", error));
+    }
+
+    function handleBlogs(blogs) {
+        if (blogs.length === 0) {
+            loadMoreBtn.style.display = "none";
+            return;
+        }
+
+        let container = document.getElementById("blog-container");
+
+        blogs.forEach(blog => {
+            let blogDiv = document.createElement("div");
+            blogDiv.classList.add("post-preview");
+            blogDiv.innerHTML = `
+                <a href="/blog-content/${blog.id}">
+                <h2 class="post-title">${blog.title}</h2>
+                <h3 class="post-subtitle">${blog.subTitle}</h3>
+                </a>
+                <p class="post-meta">
+                    <a href="#">${blog.user.name} ${blog.user.surname}</a>
+                    tarafından ${new Date(blog.created_at).toLocaleDateString('tr-TR',{ 
+                        day: 'numeric', 
+                        month: 'long',
+                        year: 'numeric'
+                    })} tarihinde paylaşıldı.
+                </p>
+                
+                <hr class="my-4">
+            `;
+            container.appendChild(blogDiv);
+        });
+
+        offset += limit; // Sonraki tıklamada daha fazla veri getir
+    }
+
+    loadMoreBtn.addEventListener("click", function () {
+        fetchBlogs(offset);
     });
 });
+

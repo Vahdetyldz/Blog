@@ -15,6 +15,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed'
         ], [
             'name.required' => 'İsim alanı boş bırakılamaz.',
+            'surname.required' => 'Soyad alanı boş bırakılamaz.',
             'email.required' => 'Lütfen bir email adresi girin.',
             'email.email' => 'Geçerli bir email adresi girin.',
             'email.unique' => 'Bu email adresi zaten kullanılıyor.',
@@ -25,6 +26,7 @@ class AuthController extends Controller
 
         User::create([
             'name' => $request->name,
+            'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
@@ -51,12 +53,12 @@ class AuthController extends Controller
         }
         session(['user' => $user->id]);
     
-        return redirect('/blogs');
+        return redirect('/');
     }
 
     public function logout()
     {
         session()->forget('user');
-        return redirect('/login')->with('success', 'Başarıyla çıkış yapıldı!');;
+        return redirect('/')->with('success', 'Başarıyla çıkış yapıldı!');;
     }
 }
