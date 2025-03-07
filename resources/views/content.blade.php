@@ -30,7 +30,7 @@
                         <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
                         @if (session()->has('user'))
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('createblog') }}">Blog Oluştur</a></li>
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs')}}">Bloglarım</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs',['id' => session('user')])}}">Bloglarım</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('logout') }}">Çıkış Yap</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('login') }}">Giriş Yap</a></li>
