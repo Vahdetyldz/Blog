@@ -11,7 +11,7 @@
     <div class="bg-white p-6 rounded-lg shadow-md w-[800px]">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Form Sayfası</h2>
 
-        <form action={{ route('post.update', ['id' => $blog->id]) }} method="POST">
+        <form action={{ route('post.update', ['blog' => $blog->id]) }} method="POST">
             @csrf
             <div class="mb-4">
                 <label for="input1" class="block text-gray-600">Başlık</label>
@@ -20,7 +20,7 @@
 
             <div class="mb-4">
                 <label for="input2" class="block text-gray-600">Alt Başlık</label>
-                <input type="text" id="input2" name="subTitle" value="{{ $blog->subTitle }}" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="text" id="input2" name="subtitle" value="{{ $blog->subtitle }}" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
 
             <div class="mb-4">

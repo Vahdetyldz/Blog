@@ -1,8 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -11,6 +12,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'surname' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed'
         ], [
@@ -24,14 +26,17 @@ class AuthController extends Controller
             'password.confirmed' => 'Şifre ve şifre tekrarınız uyuşmuyor.'
         ]);
 
-        User::create([
-            'name' => $request->name,//
+        $user = User::create([
+            'name' => $request->name,
             'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
 
-        return redirect('/login');
+        // Kullanıcıyı giriş yapmış olarak ayarla
+        Auth::login($user);
+
+        return redirect('/')->with('success', 'Başarıyla kayıt oldunuz!');
     }
 
     public function login(Request $request)
@@ -40,25 +45,18 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-    
-        // Email'i kontrol et
-        $user = User::where('email', $request->email)->first();
-    
-        if (!$user) {
-            return redirect()->back()->withErrors(['email' => 'Bu email adresi kayıtlı değil.'])->withInput();
+
+        // Kullanıcıyı giriş yapmaya çalış
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect('/')->with('success', 'Giriş başarılı!');
         }
-    
-        if (!Hash::check($request->password, $user->password)) {
-            return redirect()->back()->withErrors(['password' => 'Şifreniz hatalı.'])->withInput();
-        }
-        session(['user' => $user->id]);
-    
-        return redirect('/');
+
+        return redirect()->back()->withErrors(['email' => 'Email veya şifre hatalı.'])->withInput();
     }
 
     public function logout()
     {
-        session()->forget('user');
-        return redirect('/')->with('success', 'Başarıyla çıkış yapıldı!');;
+        Auth::logout();
+        return redirect('/')->with('success', 'Başarıyla çıkış yapıldı!');
     }
 }

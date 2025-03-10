@@ -28,9 +28,9 @@
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Ana Sayfa</a></li><!--Blog Sayfasına yönlendir-->
                         <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
-                        @if (session()->has('user'))
+                        @if (Auth::check())
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('createblog') }}">Blog Oluştur</a></li>
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs', ['id' => session('user')])}}">Bloglarım</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs')}}">Bloglarım</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('logout') }}">Çıkış Yap</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('login') }}">Giriş Yap</a></li>
@@ -65,7 +65,7 @@
                             <div class="post-preview">
                                 <a href="/blog-content/{{ $blog->id }}">
                                     <h2 class="post-title">{{ $blog->title }}</h2>
-                                    <h3 class="post-subtitle">{{$blog->subTitle}}</h3>
+                                    <h3 class="post-subtitle">{{$blog->subtitle}}</h3>
                                 </a>
                                 <p class="post-meta">
                                     <a href="/blog-content/{{ $blog->id }}">{{ $blog->user->name }} {{$blog->user->surname}}</a>

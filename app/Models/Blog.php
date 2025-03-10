@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
 {
-    protected $fillable = ['title','subTitle', 'content', 'user_id'];
+    use HasFactory;
+    protected $fillable = ['title','subtitle', 'content', 'user_id'];
 
     public function user()
     {

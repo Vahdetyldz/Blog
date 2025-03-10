@@ -20,7 +20,7 @@
 
             <div class="mb-4">
                 <label for="input2" class="block text-gray-600">Alt Başlık</label>
-                <input type="text" id="input2" name="subTitle" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="text" id="input2" name="subtitle" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
 
             <div class="mb-4">
