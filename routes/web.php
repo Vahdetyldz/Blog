@@ -18,7 +18,7 @@ Route::get('/register', function () {
 
 // Blog İşlemleri (Sadece giriş yapmış kullanıcılar için)
 Route::middleware('auth')->group(function () {
-    Route::get('/createBlog', function () {
+    Route::get('/create-blog', function () {
         return view('createBlog');
     })->name('createblog');
 

@@ -62,12 +62,35 @@
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
+                        <!-- Content -->
                         <p><?php echo (nl2br($blog->content)) ?></p>
-                        
+        
+                        @if (Auth::id() == $blog->user_id)
+                            <div class="d-flex justify-content-end mb-4">
+                                <a href="{{route('post.edit',$blog->id)}}" class="btn btn-primary">Düzenle</a>
+                                <a href="{{route('post.update', $blog->id)}}" class="btn btn-danger">Sil</a>
+                            </div>
+                         
+                        <!-- Comment Form -->
+                        <form class="mt-4"> 
+                            @csrf
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">Yorum Yap</span>
+                                <button type="submit" class="btn btn-success">Paylaş</button>
+                            </div>
+                            <textarea name="comment" class="form-control" rows="5" placeholder="Yorumunuzu yazın..." style="resize: none;"></textarea>
+                        </form>
+                        <hr class="my-4">
+                        <!-- kullanıcı giriş yapmadığı zaman yorum yazma(textarea) gözüksün fakat kullanıcı tıkladığı zaman giriş yapma ekranı çıksın -->
+                        @endif 
+                        <!-- İçeriğin yorumları burda gözükecek -->
                     </div>
                 </div>
             </div>
         </article>
+        
+        
+        
         <!-- Footer-->
         <footer class="border-top">
             <div class="container px-4 px-lg-5">
