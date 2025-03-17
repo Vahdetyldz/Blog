@@ -29,8 +29,8 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Ana Sayfa</a></li><!--Blog Sayfasına yönlendir-->
                         <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
                         @if (Auth::check())
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('createblog') }}">Blog Oluştur</a></li>
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs')}}">Bloglarım</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('blog.create') }}">Blog Oluştur</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('blog.myblogs')}}">Bloglarım</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('logout') }}">Çıkış Yap</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('login') }}">Giriş Yap</a></li>
@@ -72,9 +72,9 @@
                                     tarafından {{ \Carbon\Carbon::parse($blog->created_at)->locale('tr')->translatedFormat('j F Y') }} tarihinde paylaşıldı.
                                 </p>
                                 <div class="post">
-                                    <a href="{{ route('post.edit', $blog->id) }}" class="btn btn-warning">Güncelle</a>
+                                    <a href="{{ route('blog.edit', $blog->id) }}" class="btn btn-warning">Güncelle</a>
                             
-                                    <form action="{{ route('post.destroy', $blog->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('blog.destroy', $blog->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">Sil</button>

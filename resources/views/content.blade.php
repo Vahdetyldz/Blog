@@ -29,8 +29,8 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Ana Sayfa</a></li><!--Blog Sayfasına yönlendir-->
                         <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
                         @if (Auth::check())
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('createblog') }}">Blog Oluştur</a></li>
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('myblogs',['id' => session('user')])}}">Bloglarım</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('blog.create') }}">Blog Oluştur</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('blog.myblogs',['id' => session('user')])}}">Bloglarım</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('logout') }}">Çıkış Yap</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('login.form') }}">Giriş Yap</a></li>
@@ -67,8 +67,8 @@
         
                         @if (Auth::id() == $blog->user_id)
                             <div class="d-flex justify-content-end mb-4">
-                                <a href="{{route('post.edit',$blog->id)}}" class="btn btn-primary">Düzenle</a>
-                                <a href="{{route('post.update', $blog->id)}}" class="btn btn-danger">Sil</a>
+                                <a href="{{route('blog.edit',$blog->id)}}" class="btn btn-primary">Düzenle</a>
+                                <a href="{{route('blog.update', $blog->id)}}" class="btn btn-danger">Sil</a>
                             </div>
                          
                         <!-- Comment Form -->

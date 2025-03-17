@@ -11,7 +11,7 @@
     <div class="bg-white p-6 rounded-lg shadow-md w-[800px]">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Form Sayfası</h2>
 
-        <form action={{ route('post.update', ['blog' => $blog->id]) }} method="POST">
+        <form action={{ route('blog.update', ['blog' => $blog->id]) }} method="POST">
             @csrf
             <div class="mb-4">
                 <label for="input1" class="block text-gray-600">Başlık</label>
