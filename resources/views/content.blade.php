@@ -14,6 +14,60 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{asset('css/styles.css')}}" rel="stylesheet" />
+        <style>
+            .comment-container {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            width: 500px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+          }
+          
+          .profile {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-right: 15px;
+          }
+          
+          .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          
+          .user-info {
+            display: flex;
+            flex-direction: column; /* İsim ve tarih alt alta olacak */
+            margin-left: 10px;
+          }
+          
+          .name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+          }
+          
+          .date {
+            font-size: 12px;
+            color: #777;
+          }
+          
+          .comment-text {
+            flex-grow: 1;
+          }
+          
+          .comment-text p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            margin: 0;
+          }
+          </style>
     </head>
     <body>
         <!-- Navigation-->
@@ -70,19 +124,36 @@
                                 <a href="{{route('blog.edit',$blog->id)}}" class="btn btn-primary">Düzenle</a>
                                 <a href="{{route('blog.update', $blog->id)}}" class="btn btn-danger">Sil</a>
                             </div>
-                         
+                        @endif
+                        @if (Auth::check())
                         <!-- Comment Form -->
-                        <form class="mt-4"> 
+                        <form class="mt-4" action="{{route('comment.store')}}" method="POST"> 
                             @csrf
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="fw-bold">Yorum Yap</span>
                                 <button type="submit" class="btn btn-success">Paylaş</button>
                             </div>
                             <textarea name="comment" class="form-control" rows="5" placeholder="Yorumunuzu yazın..." style="resize: none;"></textarea>
+                            <input type="hidden" name="blog_id" value="{{$blog->id}}">
                         </form>
-                        <hr class="my-4">
                         <!-- kullanıcı giriş yapmadığı zaman yorum yazma(textarea) gözüksün fakat kullanıcı tıkladığı zaman giriş yapma ekranı çıksın -->
                         @endif 
+                        <hr class="my-4">
+                        @foreach ($comments as $comment)
+                            <div class="comment-container">
+                                <div class="profile">
+                                    <img src="Africa Twin.jpeg" alt="Profile Picture" class="profile-img">
+                                    <div class="user-info">
+                                        <span class="name">Vahdet Yıldız</span>
+                                        <span class="date">18 Mart 2025</span>
+                                    </div>
+                                </div>
+                                <div class="comment-text">
+                                    <p>{{$comment->comment}}</p>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                        @endforeach
                         <!-- İçeriğin yorumları burda gözükecek -->
                     </div>
                 </div>

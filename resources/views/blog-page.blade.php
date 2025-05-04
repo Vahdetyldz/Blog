@@ -14,6 +14,8 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <!-- resources/views/layouts/app.blade.php ya da ilgili Blade dosyanızın <head> içine -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body>
         <!-- Navigation-->
@@ -85,6 +87,15 @@
                     
                 </div>
             </div>
+            <!-- ChatBot -->
+            <div id="chat-widget" style="position: fixed; bottom: 20px; right: 20px;">
+                <button onclick="toggleChat()" style="padding: 10px 15px; border-radius: 50%; background: #3490dc; color: white; border: none;">💬</button>
+            
+                <div id="chat-box" style="display: none; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 8px; margin-top: 10px; overflow: hidden;">
+                    <div id="chat-messages" style="height: 340px; overflow-y: auto; padding: 10px;"></div>
+                    <input type="text" id="chat-input" style="width: 100%; padding: 10px; border: none; border-top: 1px solid #ccc;" placeholder="Mesajınızı yazın..." onkeypress="if(event.key==='Enter'){sendMessage()}">
+                </div>
+            </div>
         </div>
 
         <!-- Footer-->
@@ -132,5 +143,47 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{{ asset('js/scripts.js') }}"></script>
+        <!--ChatBot Script-->
+        <script>
+            function toggleChat() {
+                var box = document.getElementById('chat-box');
+                box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+            }
+        
+            function sendMessage() {
+                var input = document.getElementById('chat-input');
+                var message = input.value.trim();
+                if (!message) return;
+        
+                addMessage('Siz', message);
+        
+                fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ prompt: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addMessage('Bot', data.response || 'Cevap alınamadı.');
+                })
+                .catch(() => {
+                    addMessage('Bot', 'Hata oluştu.');
+                });
+        
+                input.value = '';
+            }
+        
+            function addMessage(sender, message) {
+                var messages = document.getElementById('chat-messages');
+                var div = document.createElement('div');
+                div.innerHTML = `<strong>${sender}:</strong> ${message}`;
+                div.style.marginBottom = '10px';
+                messages.appendChild(div);
+                messages.scrollTop = messages.scrollHeight;
+            }
+        </script>
     </body>       
 </html>
