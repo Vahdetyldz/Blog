@@ -26,6 +26,12 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+
+            if ($user->role === 'admin') {
+                return redirect('/admin')->with('success', 'Admin olarak giriş yapıldı!');
+            }
+
             return redirect('/')->with('success', 'Giriş başarılı!');
         }
 

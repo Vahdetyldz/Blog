@@ -4,6 +4,10 @@ use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ArticleController;
+
+Route::post('/articles', [ArticleController::class, 'store']);
 
 Route::get('/', [BlogController::class, 'index'])->name('home');
 
@@ -30,4 +34,18 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/blog-content/{blog}', [BlogController::class, 'getById'])->name('blog.show'); 
 Route::get('/blogs/load-more-blogs', [BlogController::class, 'loadMoreBlogs'])->name('blogs.load-more');
 Route::post('/ask', [ChatBotController::class, 'ask']);
+
+Route::get('/admin', function () {
+    // Giriş yapan kullanıcı admin değilse erişim engellenir
+    if (!Auth::check() || Auth::user()->role !== 'admin') {
+        abort(403); // Yetkisiz erişim
+    }
+
+    return view('admin.dashboard'); // admin paneli için blade dosyası
+})->middleware('auth'); // sadece giriş yapanlar erişebilir
+
+Route::get('/test-view', function () {
+    return view('fullpage'); // resources/views/dosya_adi.blade.php
+});
+Route::view('/admin/dashboard', 'reactTest')->name('admin.dashboard'); // dashboard için blade dosyası
 
