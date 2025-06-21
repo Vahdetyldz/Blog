@@ -6,6 +6,9 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\MotorPriceController;
+
+Route::post('/motor-prices', [MotorPriceController::class, 'storePrices']);
 
 Route::post('/articles', [ArticleController::class, 'store']);
 
@@ -49,3 +52,8 @@ Route::get('/test-view', function () {
 });
 Route::view('/admin/dashboard', 'reactTest')->name('admin.dashboard'); // dashboard için blade dosyası
 
+Route::get('/web/blogs', [BlogController::class, 'getAll']);
+
+Route::get('/user-info', function () {
+    return response()->json(Auth::user());
+});

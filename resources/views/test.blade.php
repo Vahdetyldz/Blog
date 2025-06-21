@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>@yield('title', 'Blog Sitesi Yönetim Paneli')</title>
+    <title>Yazı Oluştur</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/fontawesome-free/css/all.min.css"
@@ -24,9 +24,13 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
 
+    @viteReactrefresh
+    @vite('resources/js/test.jsx')
+
 </head>
 
 <body id="page-top">
+    <div id="test"></div>
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -272,4 +276,3 @@
     </script>
 </body>
 </html>
-@section('title', 'Yazı Oluştur')

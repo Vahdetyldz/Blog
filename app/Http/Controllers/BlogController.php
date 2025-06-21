@@ -22,12 +22,13 @@ class BlogController extends Controller
 
         return view('myBlogs', compact('blogs'));
     }
-    public function getAll() 
+    public function getAll(Request $request)
     {
-        $AllBlog=Blog::all();
-
-        return response()->json( $AllBlog );
+        $blogs = Blog::with('user:id,name,surname')->orderBy('id', 'desc')->paginate(4);
+        return response()->json($blogs);
     }
+
+
     public function getById($id) 
     {
         $blog = Blog::with('user:id,name,surname')->where('id', $id)->first();
