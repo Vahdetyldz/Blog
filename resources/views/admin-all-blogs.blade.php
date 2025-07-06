@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Yazı Oluştur</title>
+    <title>Kategori</title>
     <!-- Custom fonts for this template-->
     <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/fontawesome-free/css/all.min.css"
         rel="stylesheet" type="text/css">
@@ -19,14 +19,15 @@
     <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/datatables/dataTables.bootstrap4.min.css"
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     @viteReactRefresh
-    @vite('resources/js/edit.jsx')
+    @vite('resources/js/allBlogs.jsx')
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    
-    <div id="edit"></div>
+<body>
+    <div id="allBlogs"></div>
 
+    <script>
+        window.currentUser = @json(Auth::user());
+    </script>
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/jquery/jquery.min.js"></script>
     <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/bootstrap/js/bootstrap.bundle.min.js">
@@ -53,6 +54,5 @@
             });
         });
     </script>
-
 </body>
 </html>

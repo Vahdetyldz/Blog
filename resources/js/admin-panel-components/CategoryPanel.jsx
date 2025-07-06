@@ -2,9 +2,9 @@ import React from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import Footer from './Footer';
-import Dashboard from './Dashboard';
+import Category from './Category';
 
-function AdminDashboard() {
+function CategoryPanel() {
     return (
         <div id="wrapper">
             <Sidebar />
@@ -12,7 +12,7 @@ function AdminDashboard() {
                 <div id="content">
                     <Topbar />
                     <div className="container-fluid">
-                        <Dashboard />
+                        <Category />
                     </div>
                 </div>
                 <Footer />
@@ -21,5 +21,4 @@ function AdminDashboard() {
     );
 }
 
-export default AdminDashboard;
-
+export default CategoryPanel;

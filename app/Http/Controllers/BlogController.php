@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Http\Requests\BlogRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {
@@ -24,7 +25,7 @@ class BlogController extends Controller
     }
     public function getAll(Request $request)
     {
-        $blogs = Blog::with('user:id,name,surname')->orderBy('id', 'desc')->paginate(4);
+        $blogs = Blog::with(['user:id,name,surname', 'category:id,name'])->orderBy('id', 'desc')->paginate(4);
         return response()->json($blogs);
     }
 
@@ -39,33 +40,48 @@ class BlogController extends Controller
 
     public function store(BlogRequest $request)
     {
-        Blog::create([
+        //Log::info('Gelen Başlık:', $request->title);
+        $blog = Blog::create([
             'title' => $request->title,
             'content' => $request->content,
             'subtitle' => $request->subtitle,
-            'user_id' => Auth::id()
+            'image' => $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null,
+            'category_id' => $request->category_id,
+            'user_id' => Auth::id(),
         ]);
 
-        return redirect('/')->with('success', 'Blog başarıyla Kaydedildi!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Başarıyla Kaydedildi!'
+        ]);
     }
 
-    public function edit($id)
+    public function show($id)
     {
-        $blog = Blog::find($id);
-
-        return view('edit', compact('blog'));
+        $blog = Blog::findOrFail($id);
+        $blog->image_url = $blog->image ? asset('storage/' . $blog->image) : null;
+        return response()->json($blog);
     }
-
     public function update(BlogRequest $request, $id)
     {
         $blog = Blog::find($id);
         $blog->update([
             'title' => $request->title,
+            'category_id' => $request->category_id,
             'content' => $request->content,
             'subtitle' => $request->subtitle
         ]);
 
-        return redirect('/')->with('success', 'Blog başarıyla güncellendi!');
+        if ($request->hasFile('image')) {
+            // Yeni resim yükle ve kaydet
+            $path = $request->file('image')->store('images', 'public');
+            $blog->image = $path;
+        }
+        // Eğer resim yoksa eski resim korunur
+
+        $blog->save();
+
+        return response()->json($blog);
     }
 
     public function destroy($id)
@@ -77,6 +93,6 @@ class BlogController extends Controller
         }
         $blog->delete();
 
-        return redirect('/')->with('success', 'Blog başarıyla silindi!');
+        return response()->json(['message' => 'Silindi'], 200);
     }
 }

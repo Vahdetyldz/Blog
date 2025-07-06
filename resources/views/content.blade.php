@@ -87,9 +87,13 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Ana Sayfa</a></li><!--Blog Sayfasına yönlendir-->
                         <!--<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Hakkımda</a></li>-->
                         @if (Auth::check())
+                            @if (Auth::check() && Auth::user()->role === 'admin')
+                                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('admin.dashboard') }}">Admin Paneli</a></li>
+                            @endif
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('blog.create') }}">Blog Oluştur</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{route('blog.myblogs',['id' => session('user')])}}">Bloglarım</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('logout') }}">Çıkış Yap</a></li>
+                            
                         @else
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('login.form') }}">Giriş Yap</a></li>
                             <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ route('register.form') }}">Kayıt Ol</a></li>
@@ -99,7 +103,7 @@
             </div>
         </nav>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('{{asset('assets/img/post-bg.jpg')}}')">
+        <header class="masthead" style="background-image: url('{{ asset('storage/' . $blog->image) }}')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
@@ -124,9 +128,41 @@
                         <p><?php echo (nl2br($blog->content)) ?></p>
         
                         @if (Auth::id() == $blog->user_id)
-                            <div class="d-flex justify-content-end mb-4">
-                                <a href="{{route('blog.edit',$blog->id)}}" class="btn btn-primary">Düzenle</a>
-                                <a href="{{route('blog.update', $blog->id)}}" class="btn btn-danger">Sil</a>
+                            <div class="d-flex justify-content-end mb-4" style="gap: 12px;">
+                                <a href="/blogs/{{ $blog->id }}/edit" 
+                                   class="btn"
+                                   style="
+                                        background: linear-gradient(135deg, #4f8cff 0%, #235390 100%);
+                                        color: #fff;
+                                        border: none;
+                                        border-radius: 8px;
+                                        padding: 10px 28px;
+                                        font-weight: 600;
+                                        box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+                                        transition: background 0.2s, box-shadow 0.2s;
+                                   "
+                                   onmouseover="this.style.background='#235390'"
+                                   onmouseout="this.style.background='linear-gradient(135deg, #4f8cff 0%, #235390 100%)'"
+                                >
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                <a href="{{route('blog.destroy', $blog->id)}}"
+                                   class="btn"
+                                   style="
+                                        background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%);
+                                        color: #fff;
+                                        border: none;
+                                        border-radius: 8px;
+                                        padding: 10px 28px;
+                                        font-weight: 600;
+                                        box-shadow: 0 2px 8px rgba(255,94,98,0.10);
+                                        transition: background 0.2s, box-shadow 0.2s;
+                                   "
+                                   onmouseover="this.style.background='#ff5e62'"
+                                   onmouseout="this.style.background='linear-gradient(135deg, #ff5e62 0%, #ff9966 100%)'"
+                                >
+                                    <i class="fas fa-trash-alt"></i> Sil
+                                </a>
                             </div>
                         @endif
                         @if (Auth::check())
@@ -135,9 +171,25 @@
                             @csrf
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="fw-bold">Yorum Yap</span>
-                                <button type="submit" class="btn btn-success">Paylaş</button>
+                                <button type="submit" 
+                                    class="btn"
+                                    style="
+                                        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                                        color: #fff;
+                                        border: none;
+                                        border-radius: 8px;
+                                        padding: 8px 24px;
+                                        font-weight: 600;
+                                        box-shadow: 0 2px 8px rgba(67,233,123,0.10);
+                                        transition: background 0.2s, box-shadow 0.2s;
+                                    "
+                                    onmouseover="this.style.background='#43e97b'"
+                                    onmouseout="this.style.background='linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'"
+                                >
+                                    <i class="fas fa-paper-plane"></i> Paylaş
+                                </button>
                             </div>
-                            <textarea name="comment" class="form-control" rows="5" placeholder="Yorumunuzu yazın..." style="resize: none;"></textarea>
+                            <textarea name="comment" class="form-control" rows="5" placeholder="Yorumunuzu yazın..." style="resize: none; border-radius: 8px; border: 1.5px solid #b3c6e0;"></textarea>
                             <input type="hidden" name="blog_id" value="{{$blog->id}}">
                         </form>
                         <!-- kullanıcı giriş yapmadığı zaman yorum yazma(textarea) gözüksün fakat kullanıcı tıkladığı zaman giriş yapma ekranı çıksın -->
@@ -163,9 +215,6 @@
                 </div>
             </div>
         </article>
-        
-        
-        
         <!-- Footer-->
         <footer class="border-top">
             <div class="container px-4 px-lg-5">

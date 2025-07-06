@@ -1,6 +1,6 @@
 import Navbar  from "../blog-page-components/Navbar";
 import PageHeader from "../blog-page-components/PageHeader";
-import MainContent from "../blog-page-components/MainContent";
+import BlogList from "../blog-page-components/BlogList";
 import Footer from "../blog-page-components/Footer";
 
 function MyBlogs() {
@@ -8,7 +8,7 @@ function MyBlogs() {
         <>
             <Navbar />
             <PageHeader />
-            <MainContent />
+            <BlogList apiUrl="/web/myblogs" editable="{true}"/>
             <Footer />
         </>
     );

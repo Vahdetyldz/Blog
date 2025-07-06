@@ -14,7 +14,7 @@ function PageHeader() {
                     <div className="col-md-10 col-lg-8 col-xl-7">
                         <div className="site-heading">
                             <h1>Clean Blog</h1>
-                            <span className="subheading">Hazır Blog Sayfası</span>
+                            <span className="subheading">Motosiklet Blog Sayfası</span>
                         </div>
                     </div>
                 </div>
