@@ -128,6 +128,12 @@ const ArticleForm = ({ title = "Yeni Yazı", initialData = null, onSubmit, isEdi
       .then(data => {
         console.log(isEdit ? 'Makale güncellendi:' : 'Makale kaydedildi:', data);
 
+        // Kayıt veya güncelleme sonrası ilgili blog içeriği sayfasına yönlendir
+        if (data && data.id) {
+          window.location.href = `/blog-content/${data.id}`;
+          return; // Yönlendirme sonrası devam etme
+        }
+
         if (!isEdit) {
           // Yeni oluşturma sonrası formu temizle
           setFormData({ title: '', subtitle: '', category_id: '', image: null, content: '' });

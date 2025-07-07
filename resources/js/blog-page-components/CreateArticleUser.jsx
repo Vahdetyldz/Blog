@@ -11,7 +11,6 @@ function CreateArticleUser() {
         <div id="wrapper">
             <div id="content-wrapper" className="d-flex flex-column">
                 <div id="content">
-                    <Navbar />
                     <div className="container-fluid">
                         <ArticleForm
                             title="Yeni Yazı"

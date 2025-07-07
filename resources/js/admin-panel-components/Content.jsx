@@ -62,7 +62,7 @@ const Content = () => {
     <div>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 className="h3 mb-0 text-gray-800">Tüm Yazılar</h1>
-        <a href="" target="_blank" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+        <a href="/" target="_blank" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
           className="fas fa-globe fa-sm text-white-50"></i> Siteyi görüntüle</a>
       </div>
 
@@ -89,7 +89,12 @@ const Content = () => {
                 {blogs.map(blog => (
                   <tr key={blog.id}>
                     <td>
-                      <img src={`/storage/${blog.image}`} width="200" alt="Blog" />
+                      <img 
+                        src={blog.image ? `/storage/${blog.image}` : '/assets/img/DefaultPitcure.png'} 
+                        width="200" 
+                        alt="Blog" 
+                        onError={e => { e.target.onerror = null; e.target.src = '/assets/img/DefaultPitcure.png'; }}
+                      />
                     </td>
                     <td>{blog.title}</td>
                     <td>{blog.user?.name} {blog.user?.surname}</td>

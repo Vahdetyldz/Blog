@@ -95,4 +95,13 @@ class BlogController extends Controller
 
         return response()->json(['message' => 'Silindi'], 200);
     }
+
+    public function mockStore()
+    {
+        // Gerçek kayıt işlemi yok, sadece hızlıca yanıt dönülüyor
+        return response()->json([
+            'success' => true,
+            'message' => 'Mock: Blog kaydı simüle edildi!'
+        ]);
+    }
 }

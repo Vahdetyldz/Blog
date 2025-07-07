@@ -29,12 +29,20 @@ function Navbar() {
 
                         {user ? (
                             <>
+                                {(user.role === 'admin' || user.role === 'root') && (
+                                    <li className="nav-item">
+                                        <a className="nav-link px-lg-3 py-3 py-lg-4" href="/admin-dashboard">Admin Paneli</a>
+                                    </li>
+                                )}
+                                <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/motor-prices">Motosiklet Fiyatları</a></li>
                                 <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/create-blog">Blog Oluştur</a></li>
                                 <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/blog-my-blogs">Bloglarım</a></li>
                                 <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/logout">Çıkış Yap</a></li>
+                                
                             </>
                         ) : (
                             <>
+                                <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/motor-prices">Motosiklet Fiyatları</a></li>
                                 <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/login">Giriş Yap</a></li>
                                 <li className="nav-item"><a className="nav-link px-lg-3 py-3 py-lg-4" href="/register">Kayıt Ol</a></li>
                             </>

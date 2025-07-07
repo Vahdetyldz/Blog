@@ -11,11 +11,12 @@ use App\Http\Controllers\MotorPriceController;
 use App\Models\Blog;
 use App\Models\Category;
 
-Route::post('/motor-prices', [MotorPriceController::class, 'storePrices']);
+//Route::post('/motor-prices', [MotorPriceController::class, 'storePrices']);
 
 Route::post('/articles', [ArticleController::class, 'store']);
 
 Route::get('/', [BlogController::class, 'index'])->name('home');
+Route::view('/motor-prices', 'motor_prices')->name('motor.prices');
 
 Route::view('/login', 'login')->name('login.form');
 Route::view('/register', 'register')->name('register.form');
@@ -128,4 +129,4 @@ Route::patch('/users/{id}/make-admin', [AuthController::class, 'makeAdmin']);
 
 Route::get('/api/category-progress', [CategoryController::class, 'getCategoryProgress']);
 Route::get('/api/dashboard-stats', [AuthController::class, 'dashboardStats']);
-
+Route::get('/api/daily-stats', [AuthController::class, 'dailyStats']);

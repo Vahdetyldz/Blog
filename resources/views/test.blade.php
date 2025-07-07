@@ -1,278 +1,101 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
+  <meta charset="UTF-8">
+  <title>Seçilen Metni Paylaş</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    .share-popup {
+      display: none;
+      position: absolute;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
 
-    <title>Yazı Oluştur</title>
+    .share-popup a {
+      margin: 0 6px;
+      font-size: 18px;
+      text-decoration: none;
+    }
 
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/fontawesome-free/css/all.min.css"
-        rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/datatables/dataTables.bootstrap4.min.css"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-
-    @viteReactrefresh
-    @vite('resources/js/test.jsx')
-
+    .share-popup a:hover {
+      opacity: 0.75;
+    }
+  </style>
+  <meta property="og:title" content="Proxy Nedir? - Blog Başlığı">
+  <meta property="og:description" content="Proxy nedir, nasıl çalışır? Kısa ve anlaşılır açıklama.">
+  <meta property="og:image" content="https://seninsiten.com/path/to/og-image.jpg">
+  <meta property="og:url" content="https://seninsiten.com/bu-sayfa-url">
+  <meta property="og:type" content="article">
 </head>
+<body>
 
-<body id="page-top">
-    <div id="test"></div>
-    <!-- Page Wrapper -->
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-text">Blog Sitesi Admin <sup></sup></div>
-            </a>
-            <hr class="sidebar-divider my-0">
-            <li class="nav-item @if (Request::segment(2) == 'panel') active @endif ">
-                <a class="nav-link" href="">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Panel</span></a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                İçerik Yönetimi
-            </div>
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link @if (Request::segment(2) == 'yazilar') in @else collapsed @endif " href="#"
-                    data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-edit"></i>
-                    <span>Yazılar</span>
-                </a>
-                <div id="collapseTwo" class="collapse @if (Request::segment(2) == 'yazilar') show @endif"
-                    aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Yazı İşlemleri:</h6>
-                        <a class="collapse-item  @if (Request::segment(2) == 'yazilar' and !Request::segment(3)) active @endif"
-                            href="">Tüm Yazılar</a>
-                        <a class="collapse-item  @if (Request::segment(2) == 'yazilar' and Request::segment(3) == 'create') active @endif"
-                            href="">Yazı Oluştur</a>
-                    </div>
-                </div>
-            </li>
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link" href="">
-                    <i class="fas fa-fw fa-list"></i>
-                    <span>Kategoriler</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @if (Request::segment(2) == 'sayfalar') in @else collapsed @endif " href="#"
-                    data-toggle="collapse" data-target="#collapsePage" aria-expanded="true"
-                    aria-controls="collapsePage">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Sayfalar</span>
-                </a>
-                <div id="collapsePage" class="collapse @if (Request::segment(2) == 'sayfalar') show @endif"
-                    aria-labelledby="headingPage" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Sayfa İşlemleri:</h6>
-                        <a class="collapse-item  @if (Request::segment(2) == 'sayfalar' and !Request::segment(3)) active @endif"
-                            href="">Tüm Sayfalar</a>
-                        <a class="collapse-item  @if (Request::segment(2) == 'sayfalar' and Request::segment(3) == 'create') active @endif"
-                            href="">Sayfa Oluştur</a>
-                    </div>
-                </div>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-        </ul>
-        <!-- End of Sidebar -->
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-            <!-- Main Content -->
-            <div id="content">
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                        <div class="topbar-divider d-none d-sm-block"></div>
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">ELİF EKİN BİÇER</span>
+<h2>Proxy Nedir?</h2>
+<p>
+  Bilgisayarlar ve internet ile bağlantılı olarak “proxy” kelimesini kullandığımızda, genellikle bir <strong>proxy IP adresi</strong>, onun adına hareket ederek gerçek IP adresinizi gizlemeye yardımcı olur.
+</p>
+<p>
+  Bir web sitesine eriştiğinizde, sitenin size belirli bir sonuç vermek için yürüttüğü sürece siteyle etkileşime girersiniz. Bir proxy, bu istekleri yakalar ve çoğu durumda bu isteği alarak ya da isteği istenen site sunucusuna ileterek bunları bilgisayarınız adına getirildiğinde, <strong>proxy</strong> verileri size geri gönderir.
+</p>
 
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
+<div class="share-popup" id="sharePopup">
+  <a href="#" target="_blank" id="shareX" title="X (Twitter)">𝕏</a>
+  <a href="#" target="_blank" id="shareFB" title="Facebook" style="color:#1877f2;font-weight:bold;"> 
+    <svg width="20" height="20" viewBox="0 0 320 512" style="vertical-align:middle;"><path fill="#1877f2" d="M279.14 288l14.22-92.66h-88.91V127.91c0-25.35 12.42-50.06 52.24-50.06H293V6.26S259.5 0 225.36 0c-73.22 0-121 44.38-121 124.72v70.62H22.89V288h81.47v224h100.2V288z"/></svg>
+  </a>
+  <a href="#" target="_blank" id="shareLN" title="LinkedIn" style="color:#0a66c2;font-weight:bold;">
+    <svg width="20" height="20" viewBox="0 0 448 512" style="vertical-align:middle;"><path fill="#0a66c2" d="M100.28 448H7.4V148.9h92.88zm-46.44-340.7C24.09 107.3 0 83.2 0 53.6A53.6 53.6 0 0 1 53.6 0a53.6 53.6 0 0 1 53.6 53.6c0 29.6-24.09 53.7-53.36 53.7zM447.8 448h-92.4V302.4c0-34.7-12.4-58.4-43.3-58.4-23.6 0-37.6 15.9-43.7 31.3-2.3 5.6-2.8 13.4-2.8 21.2V448h-92.4s1.2-242.1 0-267.1h92.4v37.9c12.3-19 34.3-46.1 83.5-46.1 60.9 0 106.7 39.8 106.7 125.4V448z"/></svg>
+  </a>
+</div>
 
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Çıkış Yap
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">@yield('title')</h1>
-                        <a href="" target="_blank" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-globe fa-sm text-white-50"></i> Siteyi görüntüle</a>
-                    </div>
-                    <!-- Content Row -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weighy-bold text-primary">@yield('title')</h6>
-                        </div>
-                        <div class="card-body">
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    @foreach ($errors->all() as $error)
-                                        {{ $error }}
-                                    @endforeach
-                                </div>
-                            @endif
-                            <form method="post" action="" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group">
-                                    <label> Yazı Başlığı</label>
-                                    <input type="text" name="title" class="form-control" required></input>
-                                </div>
+<script>
+  const popup = document.getElementById("sharePopup");
+  const shareX = document.getElementById("shareX");
+  const shareFB = document.getElementById("shareFB");
+  const shareLN = document.getElementById("shareLN");
 
-                                <div class="form-group">
-                                    <label> Yazı Kategorisi</label>
-                                    <select class="form-control" name="category" required>
-                                        <option value="">Seçim Yapınız</option>
-                                    </select>
-                                </div>
+  document.addEventListener("mouseup", function (e) {
+    setTimeout(() => {
+      const selection = window.getSelection();
+      const text = selection.toString().trim();
 
-                                <div class="form-group">
-                                    <label> Yazı Fotoğrafı</label>
-                                    <input type="file" name="image" class="form-control" required></input>
-                                </div>
+      if (text.length > 0) {
+        const x = e.pageX;
+        const y = e.pageY;
 
-                                <div class="form-group">
-                                    <label> Yazı İçeriği</label>
-                                    <textarea id="editör" name="content" class="form-control" rows=4
-                                        required></textarea>
-                                </div>
+        const encodedText = encodeURIComponent(text);
+        const currentURL = encodeURIComponent(window.location.href);
 
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-block">Yazıyı Oluştur</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End of Main Content -->
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Blog Sitesi Admin {{ date('Y') }}</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
-        </div>
-        <!-- End of Content Wrapper -->
-    </div>
-    <!-- End of Page Wrapper -->
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Çıkış yapmak istediğinden emin misin?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">İptal</button>
-                    <a class="btn btn-primary" href="">Çıkış yap</a>
-                </div>
-            </div>
-        </div>
-    </div>
+        // X (Twitter)
+        shareX.href = `https://twitter.com/intent/tweet?text=${encodedText}%20${currentURL}`;
+        // Facebook (sadece link paylaşımı)
+        shareFB.href = `https://www.facebook.com/sharer/sharer.php?u=${currentURL}`;
+        // LinkedIn (sadece link paylaşımı)
+        shareLN.href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentURL}`;
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/jquery/jquery.min.js"></script>
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/bootstrap/js/bootstrap.bundle.min.js">
-    </script>
-    <!-- Core plugin JavaScript-->
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/js/sb-admin-2.min.js"></script>
-    <!-- Page level plugins -->
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/chart.js/Chart.min.js"></script>
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/js/demo/chart-area-demo.js"></script>
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/js/demo/chart-pie-demo.js"></script>
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/datatables/jquery.dataTables.min.js">
-    </script>
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/datatables/dataTables.bootstrap4.min.js">
-    </script>
-    <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/js/demo/datatables-demo.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#editör').summernote({
-                'height': 300
-            });
-        });
-    </script>
+        popup.style.left = `${x}px`;
+        popup.style.top = `${y}px`;
+        popup.style.display = "block";
+      } else {
+        popup.style.display = "none";
+      }
+    }, 10); // kısa bir gecikme, seçim işleminden sonra çalışması için
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!popup.contains(e.target)) {
+      popup.style.display = "none";
+    }
+  });
+</script>
+
 </body>
 </html>

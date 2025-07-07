@@ -1,4 +1,5 @@
-import { useEffect, useState  } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Chart from 'chart.js/auto';
 
 
 function Dashboard() {
@@ -25,6 +26,12 @@ function Dashboard() {
   }, []);
 
   const [categories, setCategories] = useState([]);
+  // Günlük istatistikler için state
+  const [dailyStats, setDailyStats] = useState({ dates: [], userCounts: [], blogCounts: [] });
+  const userChartRef = useRef(null);
+  const blogChartRef = useRef(null);
+  const userChartInstance = useRef(null);
+  const blogChartInstance = useRef(null);
 
   useEffect(() => {
     fetch('/api/category-progress', {
@@ -42,6 +49,102 @@ function Dashboard() {
         setLoading(false);
       });
   }, []);
+
+  // Günlük istatistikleri çek
+  useEffect(() => {
+    fetch('/api/daily-stats', {
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Günlük istatistik API cevabı:', data);
+        // Tüm tarihleri topla
+        const allDatesSet = new Set();
+        (data.blogs || []).forEach(item => allDatesSet.add(item.date));
+        (data.users || []).forEach(item => allDatesSet.add(item.date));
+        const allDates = Array.from(allDatesSet).sort();
+        // Her tarih için user ve blog countlarını eşleştir
+        const userCounts = allDates.map(date => {
+          const found = (data.users || []).find(u => u.date === date);
+          return found ? found.count : 0;
+        });
+        const blogCounts = allDates.map(date => {
+          const found = (data.blogs || []).find(b => b.date === date);
+          return found ? found.count : 0;
+        });
+        setDailyStats({ dates: allDates, userCounts, blogCounts });
+      })
+      .catch(err => console.error('Günlük istatistikler alınamadı', err));
+  }, []);
+
+  // Kullanıcı grafiği
+  useEffect(() => {
+    if (!userChartRef.current || !dailyStats || !Array.isArray(dailyStats.dates) || dailyStats.dates.length === 0) return;
+    if (userChartInstance.current) userChartInstance.current.destroy();
+    userChartInstance.current = new Chart(userChartRef.current, {
+      type: 'line',
+      data: {
+        labels: dailyStats.dates,
+        datasets: [
+          {
+            label: 'Günlük Kullanıcı Kayıtları',
+            data: Array.isArray(dailyStats.userCounts) ? dailyStats.userCounts : [],
+            borderColor: '#4e73df',
+            backgroundColor: 'rgba(78, 115, 223, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+  }, [dailyStats]);
+
+  // Blog grafiği
+  useEffect(() => {
+    if (!blogChartRef.current || !dailyStats || !Array.isArray(dailyStats.dates) || dailyStats.dates.length === 0) return;
+    if (blogChartInstance.current) blogChartInstance.current.destroy();
+    blogChartInstance.current = new Chart(blogChartRef.current, {
+      type: 'bar',
+      data: {
+        labels: dailyStats.dates,
+        datasets: [
+          {
+            label: 'Günlük Blog İçerik Sayısı',
+            data: Array.isArray(dailyStats.blogCounts) ? dailyStats.blogCounts : [],
+            backgroundColor: 'rgba(28, 200, 138, 0.5)',
+            borderColor: '#1cc88a',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+  }, [dailyStats]);
+
+  // Her kategoriye farklı renkler için renk dizisi
+  const barColors = [
+    "#4e73df", // mavi
+    "#1cc88a", // yeşil
+    "#36b9cc", // turkuaz
+    "#f6c23e", // sarı
+    "#e74a3b", // kırmızı
+    "#858796", // gri
+    "#fd7e14", // turuncu
+    "#20c997", // açık yeşil
+    "#6f42c1", // mor
+    "#17a2b8", // mavi-yeşil
+  ];
 
   const getBarColor = (percentage) => {
     if (percentage < 25) return 'bg-danger';
@@ -64,14 +167,13 @@ function Dashboard() {
 
                     {/* Page Heading */}
                     <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 className="h3 mb-0 text-gray-800">Title</h1>
-                        <a href="" target="_blank" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <a href="/" target="_blank" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 className="fas fa-globe fa-sm text-white-50"></i> Siteyi görüntüle</a>
                     </div>
 
                     {/* Content Row */}
                     <div className="row">
-                        
                         {/* Kullanıcı Sayısı */}
               <div className="col-xl-3 col-md-6 mb-4">
                 <div className="card border-left-primary shadow h-100 py-2">
@@ -142,228 +244,68 @@ function Dashboard() {
                         
                     </div>
 
-                    {/* Content Row */}
-
+                    {/* Grafikler Row */}
                     <div className="row">
-
-                        {/* Area Chart */}
-                        <div className="col-xl-8 col-lg-7">
-                            <div className="card shadow mb-4">
-                                {/* Card Header - Dropdown */}
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 className="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div className="dropdown no-arrow">
-                                        <a className="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i className="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div className="dropdown-header">Dropdown Header:</div>
-                                            <a className="dropdown-item" href="#">Action</a>
-                                            <a className="dropdown-item" href="#">Another action</a>
-                                            <a className="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Card Body */}
-                                <div className="card-body">
-                                    <div className="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
+                      {/* Günlük Kayıt Grafiği */}
+                      <div className="col-12 mb-4">
+                        <div className="card shadow mb-4">
+                          <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold text-primary">Günlük Kayıt Grafiği</h6>
+                          </div>
+                          <div className="card-body">
+                            <canvas ref={userChartRef} height="100"></canvas>
+                          </div>
                         </div>
-
-                        {/* Pie Chart */}
-                        <div className="col-xl-4 col-lg-5">
-                            <div className="card shadow mb-4">
-                                {/* Card Header - Dropdown */}
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 className="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div className="dropdown no-arrow">
-                                        <a className="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i className="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div className="dropdown-header">Dropdown Header:</div>
-                                            <a className="dropdown-item" href="#">Action</a>
-                                            <a className="dropdown-item" href="#">Another action</a>
-                                            <a className="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Card Body */}
-                                <div className="card-body">
-                                    <div className="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div className="mt-4 text-center small">
-                                        <span className="mr-2">
-                                            <i className="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span className="mr-2">
-                                            <i className="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span className="mr-2">
-                                            <i className="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                      </div>
+                      {/* İçerik Grafiği */}
+                      <div className="col-12 mb-4">
+                        <div className="card shadow mb-4">
+                          <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold text-success">İçerik Grafiği</h6>
+                          </div>
+                          <div className="card-body">
+                            <canvas ref={blogChartRef} height="100"></canvas>
+                          </div>
                         </div>
+                      </div>
                     </div>
 
-                    {/* Content Row */}
+                    {/* Kategori Dağılımı */}
                     <div className="row">
-
-                        {/* Content Column */}
-                        <div className="col-lg-6 mb-4">
-
-                            {/* Kategori yüzde burası */}
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold text-primary">Kategori Dağılımı</h6>
+                      <div className="col-12 mb-4">
+                        <div className="card shadow mb-4">
+                          <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold text-primary">Kategori Dağılımı</h6>
+                          </div>
+                          <div className="card-body">
+                            {categories.length === 0 && <p>Hiç kategori bulunamadı.</p>}
+                            {categories.map((cat, index) => (
+                              <div key={index} className="mb-3">
+                                <div className="d-flex align-items-center mb-1">
+                                  <span style={{ minWidth: 120 }}>{cat.name}</span>
+                                  <span className="ml-auto" style={{ fontWeight: 600, minWidth: 40, textAlign: 'right' }}>{cat.percentage}%</span>
                                 </div>
-                                <div className="card-body">
-                                    {categories.length === 0 && <p>Hiç kategori bulunamadı.</p>}
-
-                                    {categories.map((cat, index) => (
-                                    <div key={index}>
-                                        <h4 className="small font-weight-bold">
-                                        {cat.name}
-                                        <span className="float-right">{cat.percentage}%</span>
-                                        </h4>
-                                        <div className="progress mb-4">
-                                        <div
-                                            className={`progress-bar ${getBarColor(cat.percentage)}`}
-                                            role="progressbar"
-                                            style={{ width: `${cat.percentage}%` }}
-                                            aria-valuenow={cat.percentage}
-                                            aria-valuemin="0"
-                                            aria-valuemax="100"
-                                        ></div>
-                                        </div>
-                                    </div>
-                                    ))}
+                                <div className="progress" style={{height: '22px'}}>
+                                  <div
+                                    className="progress-bar"
+                                    role="progressbar"
+                                    style={{
+                                      width: `${cat.percentage}%`,
+                                      backgroundColor: barColors[index % barColors.length],
+                                      fontWeight: 600,
+                                      fontSize: '15px',
+                                    }}
+                                    aria-valuenow={cat.percentage}
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                  ></div>
                                 </div>
-                            </div>
-
-                            {/* Color System */}
-                            <div className="row">
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-primary text-white shadow">
-                                        <div className="card-body">
-                                            Primary
-                                            <div className="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-success text-white shadow">
-                                        <div className="card-body">
-                                            Success
-                                            <div className="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-info text-white shadow">
-                                        <div className="card-body">
-                                            Info
-                                            <div className="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-warning text-white shadow">
-                                        <div className="card-body">
-                                            Warning
-                                            <div className="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-danger text-white shadow">
-                                        <div className="card-body">
-                                            Danger
-                                            <div className="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-secondary text-white shadow">
-                                        <div className="card-body">
-                                            Secondary
-                                            <div className="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-light text-black shadow">
-                                        <div className="card-body">
-                                            Light
-                                            <div className="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <div className="card bg-dark text-white shadow">
-                                        <div className="card-body">
-                                            Dark
-                                            <div className="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                              </div>
+                            ))}
+                          </div>
                         </div>
-
-                        <div className="col-lg-6 mb-4">
-
-                            {/* Illustrations */}
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold text-primary">Illustrations</h6>
-                                </div>
-                                <div className="card-body">
-                                    <div className="text-center">
-                                        {/* <img className="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/img/undraw_posting_photo.svg"
-                                            alt="..."></img>
-                                        */}
-                                        
-                                    </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                                        unDraw &rarr;</a>
-                                </div>
-                            </div>
-
-                            {/* Approach */}
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div className="card-body">
-                                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classNamees in order to reduce
-                                        CSS bloat and poor page performance. Custom CSS classNamees are used to create
-                                        custom components and custom utility classNamees.</p>
-                                    <p className="mb-0">Before working with this theme, you should become familiar with the
-                                        Bootstrap framework, especially the utility classNamees.</p>
-                                </div>
-                            </div>
-
-                        </div>
+                      </div>
                     </div>
-
 
                     {/* /.container-fluid */}
                 </div>

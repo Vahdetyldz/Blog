@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/js/allBlogs.jsx',
                 'resources/js/users.jsx',
                 'resources/js/comments.jsx',
+                'resources/js/chatbot.jsx',
             ],
             refresh: true,
         }),

@@ -25,7 +25,6 @@
     @vite('resources/js/createArticleUser.jsx')
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div>Merhaba Dünya</div>
     <div id="createArticleUser"></div>
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('startbootstrap-sb-admin-2-gh-pages') }}/vendor/jquery/jquery.min.js"></script>

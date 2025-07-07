@@ -3,6 +3,7 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import Footer from './Footer';
 import Dashboard from './Dashboard';
+import LogoutModal from './LogoutModal';
 
 function AdminDashboard() {
     return (
@@ -15,6 +16,7 @@ function AdminDashboard() {
                         <Dashboard />
                     </div>
                 </div>
+                <LogoutModal onLogout={() => console.log('Çıkış yapıldı')} />
                 <Footer />
             </div>
         </div>

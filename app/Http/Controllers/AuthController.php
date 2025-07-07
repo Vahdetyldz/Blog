@@ -120,4 +120,43 @@ class AuthController extends Controller
             'commentCount' => Comment::count(),
         ]);
     }
+
+    public function dailyStats()
+    {
+        // Son 30 günü oluştur
+        $dates = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $dates[] = now()->subDays($i)->format('Y-m-d');
+        }
+
+        // Kullanıcı ve blog istatistiklerini çek
+        $userStats = User::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->whereBetween('created_at', [now()->subDays(29)->startOfDay(), now()->endOfDay()])
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $blogStats = Blog::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->whereBetween('created_at', [now()->subDays(29)->startOfDay(), now()->endOfDay()])
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        // Her gün için countları eşleştir
+        $users = [];
+        $blogs = [];
+        foreach ($dates as $date) {
+            $users[] = [
+                'date' => $date,
+                'count' => isset($userStats[$date]) ? (int)$userStats[$date] : 0
+            ];
+            $blogs[] = [
+                'date' => $date,
+                'count' => isset($blogStats[$date]) ? (int)$blogStats[$date] : 0
+            ];
+        }
+
+        return response()->json([
+            'users' => $users,
+            'blogs' => $blogs,
+        ]);
+    }
 }

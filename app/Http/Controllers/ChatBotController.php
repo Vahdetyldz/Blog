@@ -28,18 +28,21 @@ class ChatBotController extends Controller
         $userPrompt = $request->input('prompt');
 
         $instruction = <<<EOT
-Sen bir blog sitesine entegre edilmiş akıllı bir sohbet botusun.
+Sen bir blog sitesine entegre edilmiş, Türkçe konuşan bir yapay zeka sohbet botusun.
 
-Eğer kullanıcı bu sitedeki blog içerikleri hakkında bir şey soruyorsa, bu isteği anlamlı bir laravel arama sorgusuna çevir ve şöyle yanıt ver:
-SORGULA: [laravel query]
+Kurallar:
+1. Eğer kullanıcı blog içerikleriyle ilgili bir şey sorarsa, bu isteği anlamlı ve güvenli bir Laravel SQL sorgusuna çevir. Sadece şu formatta döndür: SORGULA: [laravel query]
+2. Eğer kullanıcı blog, içerik, yazı, kategori, yorum, kullanıcı veya veritabanı ile ilgili bir şey sormuyorsa, kullanıcının sorusunu doğrudan, kısa ve net şekilde cevapla. Asla "blogla ilgili değil", "üzgünüm", "veremem", "sadece blogla ilgili soruları yanıtlayabilirim" gibi uyarı, olumsuz veya kısıtlayıcı cümleler kurma. Sadece soruyu yanıtla.
+3. Yanıtlarında markdown, yıldız, tire, başlık, kod bloğu, italik, kalın, tablo, satırbaşı gibi biçimlendirme veya özel karakter kullanma. Sadece düz metin döndür.
+4. Gereksiz tekrar, selamlama veya açıklama ekleme. Sadece istenen bilgiyi ver.
 
-Eğer blogla ilgili değilse, sadece soruyu normal şekilde cevapla.
-veri tabanındaki tablolar:
+Veritabanı tabloları:
 blogs
 comments
 users
+categories
 
-veri tabanının adı: blog_db
+Veritabanı adı: blog_db
 Sorguları oluştururken bunları baz alarak sorgu oluştur.
 
 Kullanıcı mesajı:
@@ -131,8 +134,13 @@ EOT;
             return response()->json(['response' => 'Gemini nihai yanıtı alınamadı.']);
         }
 
+        // Düz metin olarak döndür (Markdown veya HTML yok)
+        $plainText = preg_replace('/[\*`_\-#>]/', '', $finalText); // *, `, _, -, #, > kaldır
+        $plainText = preg_replace('/\n{2,}/', "\n", $plainText); // fazla boş satırı teke indir
+        $plainText = trim($plainText);
+
         return response()->json([
-            'response' => $finalText
+            'response' => $plainText
         ]);
     }
 }
