@@ -78,7 +78,7 @@ function ChatBot() {
         },
         chatBox: {
             width: "500px",
-            height: "800px",
+            height: "500px",
             background: "rgba(255,255,255,0.98)",
             border: "1px solid #e3e7ee",
             borderRadius: "18px",

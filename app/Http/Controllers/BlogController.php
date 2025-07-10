@@ -6,7 +6,7 @@ use App\Models\Blog;
 use App\Models\Comment;
 use App\Http\Requests\BlogRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
@@ -25,7 +25,12 @@ class BlogController extends Controller
     }
     public function getAll(Request $request)
     {
-        $blogs = Blog::with(['user:id,name,surname', 'category:id,name'])->orderBy('id', 'desc')->paginate(4);
+        $query = Blog::with(['user:id,name,surname', 'category:id,name']);
+        $categoryId = $request->input('category_id');
+        if (!empty($categoryId) && $categoryId != 0) {
+            $query->where('category_id', $categoryId);
+        }
+        $blogs = $query->orderBy('id', 'desc')->paginate(4);
         return response()->json($blogs);
     }
 
